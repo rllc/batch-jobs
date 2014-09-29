@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.6.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+
+defaultTasks 'clean', 'build'
+
+jar {
+    baseName = 'batch-jobs'
+    version =  '1.0'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-release" }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-batch")
+	compile("org.springframework:spring-oxm")
+    compile 'org.apache.commons:commons-dbcp2:2.0.1'
+	compile 'commons-io:commons-io:2.4'
+    compile("org.hsqldb:hsqldb")
+	compile 'joda-time:joda-time:2.4'
+	compile 'org.springframework.integration:spring-integration-sftp:4.0.4.RELEASE'
+    compile 'commons-configuration:commons-configuration:1.10'
+
+    testCompile("junit:junit")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+

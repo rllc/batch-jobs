@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:int-sftp="http://www.springframework.org/schema/integration/sftp"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+    http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+    http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.0.xsd
+    http://www.springframework.org/schema/integration/sftp http://www.springframework.org/schema/integration/sftp/spring-integration-sftp-4.0.xsd">
+
+    <context:property-placeholder location="sftp.properties" />
+
+	<!-- sftp session factory bean that contains details of the sftp location -->
+    <bean id="sftpSessionFactory"
+        class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory">
+        <property name="host" value="${batch.sftp.hostname}" />
+        <property name="port" value="${batch.sftp.port}" />
+        <property name="user" value="${batch.sftp.username}" />
+        <property name="password" value="${batch.sftp.password}" />
+    </bean>
+    
+	<int:channel id="ftpChannel" />
+
+	<int-sftp:outbound-channel-adapter
+		id="ftpOutbound" channel="ftpChannel" remote-directory="${batch.sftp.dest.directory}"
+		session-factory="sftpSessionFactory" />
+		
+</beans>
