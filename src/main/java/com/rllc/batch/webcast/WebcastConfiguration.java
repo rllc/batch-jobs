@@ -14,12 +14,11 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @EnableBatchProcessing
-// @PropertySource("classpath:batch.properties")
-@ImportResource("classpath:sftp-context.xml")
+@PropertySource({"classpath:batch.properties", "classpath:sftp.properties"})
 public class WebcastConfiguration {
 
 	@Autowired

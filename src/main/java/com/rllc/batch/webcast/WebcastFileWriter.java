@@ -21,7 +21,7 @@ public class WebcastFileWriter implements ItemWriter<File> {
 			.getLogger(WebcastFileWriter.class);
 	
 	@Autowired
-    private MessageChannel ftpChannel;
+	DynamicFtpChannelResolver channelResolver;
 	
 	@PostConstruct
 	public void init() {
@@ -31,6 +31,7 @@ public class WebcastFileWriter implements ItemWriter<File> {
 	public void write(List<? extends File> files) throws Exception {
 		for (File file : files) {
 			log.info("uploading file : " + file);
+			MessageChannel ftpChannel = channelResolver.resolve(file.getName());
 			
 	        Message<File> message = MessageBuilder.withPayload(file).build();
 	        ftpChannel.send(message);

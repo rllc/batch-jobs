@@ -14,8 +14,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,9 +21,6 @@ public class WebcastFileReader implements ItemReader<File> {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(WebcastFileReader.class);
-	
-	@Autowired
-	Environment env;
 	
 	private Stack<File> fileStack;
 	
