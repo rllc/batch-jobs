@@ -2,6 +2,7 @@ package com.rllc.batch.webcast;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Stack;
 
@@ -14,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +39,16 @@ public class WebcastFileReader implements ItemReader<File> {
 	public void init() throws Exception {
 		log.debug("init");
 		config = new PropertiesConfiguration("batch.properties");
-		lastExecutionTime = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").parse(config.getString("lastExecutionTime"));
+		if (config.getString("lastExecutionTime") != null) {
+			log.info("lastExecutionTime loaded from file.");
+			lastExecutionTime = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").parse(config.getString("lastExecutionTime"));
+		}
+		else {
+			log.info("lastExecutionTime not found. setting year to 2000");
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.YEAR, 2000);
+			lastExecutionTime = cal.getTime();
+		}
 		rootDirectory = config.getString("rootDirectory");
 		log.info("lastExecutionTime : " + lastExecutionTime);
 		log.info("rootDirectory : " + rootDirectory);
@@ -52,6 +61,7 @@ public class WebcastFileReader implements ItemReader<File> {
 		boolean passes = true;
 		LocalDate lastTime = new LocalDate(lastExecutionTime);
 		LocalDate fileTime = new LocalDate(file.lastModified());
+		
 		if (!file.isFile()) {
 			passes = false;
 			log.debug(file.getName() + " is not a file");
@@ -62,7 +72,7 @@ public class WebcastFileReader implements ItemReader<File> {
 		}
 		else if (!fileTime.isAfter(lastTime)) {
 			passes = false;
-			log.debug(file.getName() + " [" + fileTime + "] is not after [" + lastTime + "]");
+			log.info(file.getName() + " [" + fileTime + "] is not after [" + lastTime + "]");
 		}
 		
 		return passes;
